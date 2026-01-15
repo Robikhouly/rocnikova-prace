@@ -1,0 +1,63 @@
+from machine import Pin, I2C
+from pca9685 import PCA9685
+import time
+
+# =====================
+# I2C – uprav jen pokud máš jiné piny
+# =====================
+i2c = I2C(
+    0,
+    scl=Pin(1),   # GP1
+    sda=Pin(0),   # GP0
+    freq=400000
+)
+
+pca = PCA9685(i2c)
+pca.freq(50)  # 50 Hz pro servo
+
+# =====================
+# Kanály motorů
+# =====================
+MOTOR_1 = 0
+MOTOR_2 = 4
+MOTOR_3 = 8
+
+
+# =====================
+# Funkce pro pohyb serva
+# =====================
+def servo_move(channel, min_ms=1.0, max_ms=2.0):
+    pca.set_pwm_ms(channel, min_ms)
+    time.sleep(0.5)
+    pca.set_pwm_ms(channel, max_ms)
+    time.sleep(0.5)
+    pca.set_pwm_ms(channel, min_ms)
+    time.sleep(0.5)
+
+# =====================
+# SLOTY (úkol č.2)
+# =====================
+def slot_1():
+    print("Slot 1")
+    servo_move(MOTOR_1)
+
+def slot_2():
+    print("Slot 2")
+    servo_move(MOTOR_2)
+
+def slot_3():
+    print("Slot 3")
+    servo_move(MOTOR_3)
+
+# =====================
+# HLAVNÍ PROGRAM
+# =====================
+while True:
+    slot_1()
+    time.sleep(1)
+
+    slot_2()
+    time.sleep(1)
+
+    slot_3()
+    time.sleep(3)
